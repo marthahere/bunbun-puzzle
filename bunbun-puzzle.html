@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Use UTF-8 so symbols like ♥ and ♪ display correctly -->
+    <meta charset="UTF-8">
+
+    <!-- Makes the page scale properly on phones and tablets -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+    <title>BunBun</title>
+
+    <!-- Load the fonts used by the game -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&family=Pixelify+Sans:wght@500;700&display=swap"
+        rel="stylesheet"
+    >
+    <link 
+        href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700&display=swap" 
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="bunny-puzzle.css">
+
+</head>
+
+<body>
+
+    <!-- Reusable SVG drawings (provided by Claude). -->
+    <svg class="sprites" width="0" height="0" aria-hidden="true" focusable="false">
+        <defs>
+
+            <!-- Reusable bunny drawing. -->
+            <symbol id="bunny" viewBox="0 0 100 100">
+
+                <!-- Bunny ears -->
+                <ellipse
+                    cx="31" cy="27" rx="11" ry="22"
+                    transform="rotate(-8 31 27)"
+                    fill="#fffaf6"
+                    stroke="#5b3a3d"
+                    stroke-width="3"
+                />
+
+                <ellipse
+                    cx="69" cy="27" rx="11" ry="22"
+                    transform="rotate(8 69 27)"
+                    fill="#fffaf6"
+                    stroke="#5b3a3d"
+                    stroke-width="3"
+                />
+
+                <!-- Pink inner ears -->
+                <ellipse
+                    cx="31" cy="28" rx="5.5" ry="15"
+                    transform="rotate(-8 31 28)"
+                    fill="#ffc2dc"
+                />
+
+                <ellipse
+                    cx="69" cy="28" rx="5.5" ry="15"
+                    transform="rotate(8 69 28)"
+                    fill="#ffc2dc"
+                />
+
+                <!-- Bunny head -->
+                <ellipse
+                    cx="50" cy="65" rx="40" ry="29"
+                    fill="#fffaf6"
+                    stroke="#5b3a3d"
+                    stroke-width="3"
+                />
+
+                <!-- Pink cheeks -->
+                <ellipse
+                    cx="23" cy="73" rx="6.5" ry="4.2"
+                    fill="#ffb3d1"
+                    opacity=".75"
+                />
+
+                <ellipse
+                    cx="77" cy="73" rx="6.5" ry="4.2"
+                    fill="#ffb3d1"
+                    opacity=".75"
+                />
+
+                <!-- Whiskers -->
+                <path
+                    d="M13 66 L3 64 M13 72 L3 74 M87 66 L97 64 M87 72 L97 74"
+                    stroke="#5b3a3d"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    fill="none"
+                />
+
+                <!-- Eyes -->
+                <ellipse
+                    cx="35" cy="64" rx="5.2" ry="6.2"
+                    fill="#5b3a3d"
+                />
+
+                <ellipse
+                    cx="65" cy="64" rx="5.2" ry="6.2"
+                    fill="#5b3a3d"
+                />
+
+                <!-- White highlights in the eyes -->
+                <circle cx="36.8" cy="61.8" r="2" fill="#fff" />
+                <circle cx="66.8" cy="61.8" r="2" fill="#fff" />
+
+                <!-- Nose -->
+                <ellipse
+                    cx="50" cy="71" rx="3.2" ry="2.2"
+                    fill="#ff8fb8"
+                />
+
+                <!-- Mouth -->
+                <path
+                    d="M45.5 75 q2.25 3 4.5 0 q2.25 3 4.5 0"
+                    stroke="#5b3a3d"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    fill="none"
+                />
+
+                <!-- Bow 
+                This is a CSS variable, so JavaScript or CSS can
+                change the bunny's bow color later.
+                -->
+                <g
+                    transform="translate(74 40) rotate(14)"
+                    stroke="#5b3a3d"
+                    stroke-width="2.5"
+                    stroke-linejoin="round"
+                >
+                    <path
+                        d="M0 0 L-15 -9 Q-19 0 -15 9 Z"
+                        fill="var(--bow, #ff8fc7)"
+                    />
+
+                    <path
+                        d="M0 0 L15 -9 Q19 0 15 9 Z"
+                        fill="var(--bow, #ff8fc7)"
+                    />
+
+                    <circle
+                        r="5"
+                        fill="var(--bow, #ff8fc7)"
+                    />
+                </g>
+
+                <!-- Small flower on the bow -->
+                <g
+                    transform="translate(74 40)"
+                    stroke="#5b3a3d"
+                    stroke-width="1.2"
+                >
+                    <circle cx="0" cy="-3.6" r="2.7" fill="#fff" />
+                    <circle cx="3.4" cy="-1.1" r="2.7" fill="#fff" />
+                    <circle cx="2.1" cy="2.9" r="2.7" fill="#fff" />
+                    <circle cx="-2.1" cy="2.9" r="2.7" fill="#fff" />
+                    <circle cx="-3.4" cy="-1.1" r="2.7" fill="#fff" />
+
+                    <!-- Flower center -->
+                    <circle r="2" fill="#ffd85e" stroke="none" />
+                </g>
+            </symbol>
+
+            <!-- Reusable carrot drawing. Used for player lives. -->
+            <symbol id="carrot" viewBox="0 0 40 40">
+
+                <!-- Carrot leaves -->
+                <g
+                    fill="#8fd17f"
+                    stroke="#5b3a3d"
+                    stroke-width="2.5"
+                    stroke-linejoin="round"
+                >
+                    <ellipse cx="20" cy="7" rx="3.2" ry="6" />
+                    <ellipse
+                        cx="14" cy="9" rx="3.2" ry="6"
+                        transform="rotate(-35 14 9)"
+                    />
+                    <ellipse
+                        cx="26" cy="9" rx="3.2" ry="6"
+                        transform="rotate(35 26 9)"
+                    />
+                </g>
+
+                <!-- Orange carrot -->
+                <path
+                    d="M9 15 Q20 9 31 15 Q28 27 20 38 Q12 27 9 15 Z"
+                    fill="#ffab5e"
+                    stroke="#5b3a3d"
+                    stroke-width="2.5"
+                    stroke-linejoin="round"
+                />
+
+                <!-- Lines on the carrot -->
+                <path
+                    d="M14 20 h5 M22 25 h5 M17 30 h4"
+                    stroke="#e0762a"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    fill="none"
+                />
+            </symbol>
+
+        </defs>
+    </svg>
+
+
+    <main id="app">
+
+        <!-- ==================== TITLE SCREEN ==================== -->
+        <!--
+            The JavaScript should hide this screen when the player
+            clicks Play and show the game screen instead.
+        -->
+        <section id="title-screen" class="screen">
+
+            <div class="window title-window">
+
+                <!-- Fake computer-style title bar -->
+                <div class="title-bar">
+                    <span class="title-bar-text">BunBun.exe</span>
+
+                    <!-- Decorative window buttons (provided by Claude). -->
+                    <span class="title-bar-buttons" aria-hidden="true">
+                        <i>_</i>
+                        <i>&#9633;</i>
+                        <i>&times;</i>
+                    </span>
+                </div>
+
+
+                <div class="window-body title-body">
+
+                    <!-- Bunny displayed on the title screen -->
+                    <div class="bunny-sticker">
+                        <svg
+                            class="bunny"
+                            role="img"
+                            aria-label="BunBun the bunny"
+                        >
+                            <use href="#bunny"></use>
+                        </svg>
+                    </div>
+
+
+                    <!-- Game title and main menu buttons -->
+                    <div class="title-content">
+
+                        <h1 class="game-title">BunBun</h1>
+
+                        <p class="tagline">Think like a bunny!</p>
+
+
+                        <div class="button-stack">
+
+                            <!-- JavaScript will start the game when clicked. -->
+                            <button
+                                id="play-button"
+                                class="btn btn-primary btn-play"
+                                type="button"
+                            >
+                                Play
+                            </button>
+
+                            <!-- JavaScript can toggle the music on/off. -->
+                            <button
+                                id="music-button"
+                                class="btn btn-soft"
+                                type="button"
+                            >
+                                &#9834; Music: ON
+                            </button>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+                <!-- Small status bar at the bottom of the window -->
+                <div class="status-bar" aria-hidden="true">
+                    <span>ready &#9829;</span>
+                    <span>v1.0</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- ==================== GAME SCREEN ==================== -->
+        <!--
+            "is-hidden" hides this screen when the page first loads.
+
+            JavaScript will remove "is-hidden" when Play is clicked.
+        -->
+        <section id="game-screen" class="screen is-hidden">
+
+            <div class="window game-window">
+
+                <!-- Game window title bar -->
+                <div class="title-bar">
+                    <span class="title-bar-text">BunBun - puzzle.exe</span>
+
+                    <span class="title-bar-buttons" aria-hidden="true">
+                        <i>_</i>
+                        <i>&#9633;</i>
+                        <i>&times;</i>
+                    </span>
+                </div>
+
+                
+                <div class="window-body game-body">
+
+                    <!-- ==================== GAME HEADER ==================== -->
+                    <div class="game-header">
+
+                        <!-- Instructions for the player -->
+                        <div
+                            id="instructions"
+                            class="panel instructions"
+                        >
+                            <h2 class="panel-title">How to play</h2>
+
+                            <p>
+                                One bunny in every
+                                <strong>row</strong>,
+                                <strong>column</strong>
+                                and <strong>color</strong>.
+                                Bunnies can't touch, not even corners!
+                            </p>
+                        </div>
+
+
+                        <!-- Player statistics -->
+                        <div id="game-info" class="panel stats">
+
+                            <!-- Number of puzzles/wins completed -->
+                            <div class="stat">
+                                <span class="stat-label">Wins</span>
+                                <span
+                                    id="win-count"
+                                    class="stat-value"
+                                >
+                                    0
+                                </span>
+                            </div>
+
+
+                            <!-- Player's remaining lives -->
+                            <div class="stat">
+                                <span class="stat-label">Lives</span>
+
+                                <span
+                                    id="lives"
+                                    class="lives"
+                                    aria-label="3 lives left"
+                                >
+                                    <!--
+                                        Each carrot represents one life.
+
+                                        JavaScript can add the "lost" class
+                                        to a carrot when the player loses a life.
+                                    -->
+                                    <svg class="carrot">
+                                        <use href="#carrot"></use>
+                                    </svg>
+
+                                    <svg class="carrot">
+                                        <use href="#carrot"></use>
+                                    </svg>
+
+                                    <svg class="carrot">
+                                        <use href="#carrot"></use>
+                                    </svg>
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- ==================== PUZZLE BOARD ==================== -->
+                    <!--
+                        A 5x5 board, 25 cells total.
+
+                        data-row and data-col tell JavaScript where each
+                        cell is located on the board.
+                    -->
+                    <div id="game-board" class="board"></div>
+
+
+                    <!-- ==================== GAME MESSAGE ==================== -->
+                    <!--
+                        JavaScript can change the message and add classes
+                        such as "is-win" or "is-lose" to change its appearance.
+                    -->
+                    <div id="game-message" class="message-box">
+
+                        <div class="message-header">
+                            <span>&#9829; message</span>
+                        </div>
+
+
+                        <!-- JavaScript changes this text during the game. -->
+                        <p id="message-text" class="message-text">
+                            Pick a square to place your first bunny!
+                        </p>
+
+
+                        <!-- Buttons shown after certain game events -->
+                        <div class="message-buttons">
+
+
+                            <!-- Move on to another puzzle -->
+                            <button
+                                id="next-puzzle-button"
+                                class="btn btn-primary btn-small"
+                                type="button"
+                            >
+                                Next Puzzle
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="bunny-puzzle.js"></script>
+</body>
+</html>

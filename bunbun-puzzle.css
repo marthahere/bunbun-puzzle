@@ -1,0 +1,1444 @@
+/* =========================================================
+   BUNBUN BUNNY GAME - STYLE.CSS
+   <3 :D :3
+   ========================================================= */
+
+
+/* =========================================================
+   1. GAME COLORS, FONTS, AND SIZES
+   ========================================================= */
+
+/* These are reusable variables.
+   Change a color here and it changes everywhere
+   that uses the variable. */
+:root {
+    /* Main dark brown color used for outlines */
+    --ink: #5b3a3d;
+
+    /* Main bunny-game pink colors */
+    --cream: #fff8f1;
+    --pink-50: #fff1f8;
+    --pink-100: #ffdcee;
+    --pink-300: #ffb3d6;
+    --pink-500: #ff78b8;
+    --pink-600: #e9509d;
+
+    /* Five colors used on the bunny puzzle board */
+    --region-1: #ffc9df; /* Pink */
+    --region-2: #dccbf7; /* Lavender */
+    --region-3: #bfe1fb; /* Blue */
+    --region-4: #cdebb9; /* Green */
+    --region-5: #fdeea5; /* Yellow */
+
+    /* Pixel-style font for titles and game UI */
+    --font-pixel: "Pixelify Sans", "Press Start 2P",
+        ui-monospace, "Courier New", monospace;
+
+    /* Normal font for instructions and other text */
+    --font-body: "Nunito", "Trebuchet MS",
+        "Segoe UI", system-ui, sans-serif;
+
+    /* Space around the outside of the game */
+    --page-pad: clamp(8px, 2vw, 22px);
+}
+
+
+/* =========================================================
+   2. BASIC PAGE SETTINGS
+   ========================================================= */
+
+/* Remove the browser's default spacing from everything.
+   box-sizing makes width/height calculations easier. */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+
+/* Make the page fill the entire screen.
+   The game should not have a scrollbar. */
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+
+/* Basic appearance of the whole bunny game page */
+body {
+    font-family: var(--font-body);
+    font-weight: 600;
+    color: var(--ink);
+
+    /* Pink background behind the game */
+    background-color: #ffe9f4;
+
+    /* Tiny pixel hearts in the background.
+       This is an SVG image stored directly inside the CSS. */
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='72' viewBox='0 0 72 72'%3E%3Cg fill='%23ffd0e7'%3E%3Cg transform='translate(9 9) scale(3)'%3E%3Crect x='1' width='2' height='1'/%3E%3Crect x='4' width='2' height='1'/%3E%3Crect y='1' width='7' height='2'/%3E%3Crect x='1' y='3' width='5' height='1'/%3E%3Crect x='2' y='4' width='3' height='1'/%3E%3Crect x='3' y='5' width='1' height='1'/%3E%3C/g%3E%3Cg transform='translate(46 47) scale(2)'%3E%3Crect x='1' width='2' height='1'/%3E%3Crect x='4' width='2' height='1'/%3E%3Crect y='1' width='7' height='2'/%3E%3Crect x='1' y='3' width='5' height='1'/%3E%3Crect x='2' y='4' width='3' height='1'/%3E%3Crect x='3' y='5' width='1' height='1'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+
+    /* Repeat the heart pattern every 72 pixels */
+    background-size: 72px 72px;
+
+    /* Remove the flashing highlight when tapping things
+       on mobile devices. */
+    -webkit-tap-highlight-color: transparent;
+}
+
+
+/* This holds SVG sprites used by the game.
+   It is invisible and takes up no space. */
+.sprites {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+}
+
+
+/* The main game container fills the screen. */
+#app {
+    position: relative;
+    z-index: 1;
+
+    /* 100dvh works better on modern phones */
+    height: 100vh;
+    height: 100dvh;
+
+    /* Add space around the game */
+    padding: var(--page-pad);
+
+    /* Leave room for phone notches */
+    padding-top: max(
+        var(--page-pad),
+        env(safe-area-inset-top)
+    );
+
+    /* Leave room for phone bottom bars */
+    padding-bottom: max(
+        var(--page-pad),
+        env(safe-area-inset-bottom)
+    );
+}
+
+
+/* Each game screen takes up the whole available area.
+   For example: title screen or puzzle screen. */
+.screen {
+    width: 100%;
+    height: 100%;
+
+    /* Use flexbox to center the screen's window */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* JavaScript can add this class to hide a screen. */
+.is-hidden {
+    display: none !important;
+}
+
+
+/* =========================================================
+   3. DECORATIVE SPARKLES
+   ========================================================= */
+
+/* This layer sits behind the game.
+   It is only decoration and cannot be clicked. */
+.sparkle-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+/* Basic appearance of each sparkle/star */
+.sparkle {
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    background: #fff;
+
+    /* Turn the square into a four-point star */
+    clip-path: polygon(
+        50% 0,
+        62% 38%,
+        100% 50%,
+        62% 62%,
+        50% 100%,
+        38% 62%,
+        0 50%,
+        38% 38%
+    );
+
+    /* Make the stars slowly twinkle */
+    animation: twinkle 3.4s ease-in-out infinite;
+}
+
+
+/* Position and customize each sparkle */
+.s1 {
+    top: 9%;
+    left: 8%;
+}
+
+.s2 {
+    top: 16%;
+    right: 10%;
+    width: 30px;
+    height: 30px;
+    background: var(--pink-500);
+    animation-delay: -1.2s;
+}
+
+.s3 {
+    bottom: 14%;
+    left: 12%;
+    width: 16px;
+    height: 16px;
+    background: #d3bff6;
+    animation-delay: -2.1s;
+}
+
+.s4 {
+    bottom: 9%;
+    right: 7%;
+    animation-delay: -0.6s;
+}
+
+.s5 {
+    top: 48%;
+    left: 3%;
+    width: 14px;
+    height: 14px;
+    background: var(--pink-300);
+    animation-delay: -2.8s;
+}
+
+
+/* Animation that makes the sparkles shrink,
+   rotate, and become slightly transparent. */
+@keyframes twinkle {
+    0%, 100% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(0.55) rotate(20deg);
+        opacity: 0.6;
+    }
+}
+
+
+/* =========================================================
+   4. OLD-COMPUTER-STYLE WINDOWS
+   ========================================================= */
+
+/* Every game window uses this basic style.
+   The title screen and puzzle screen both use it. */
+.window {
+    display: flex;
+    flex-direction: column;
+
+    max-width: 100%;
+    max-height: 100%;
+
+    /* Cream-colored window */
+    background: var(--cream);
+
+    /* Dark bunny-style outline */
+    border: 3px solid var(--ink);
+
+    /* Rounded corners */
+    border-radius: 18px;
+
+    /* Prevent content from spilling outside the rounded corners */
+    overflow: hidden;
+}
+
+
+/* Pink bar across the top of every window */
+.title-bar {
+    flex: none;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 12px;
+
+    padding: 6px 8px 6px 14px;
+
+    background: var(--pink-500);
+
+    /* Dark line underneath the title bar */
+    border-bottom: 3px solid var(--ink);
+
+    color: #fff;
+
+    /* Pixel font for the window title */
+    font-family: var(--font-pixel);
+    font-weight: 700;
+    font-size: 1rem;
+
+    letter-spacing: 0.02em;
+
+    /* Dark outline around the title text */
+    text-shadow: 0 2px 0 var(--ink);
+}
+
+
+/* The fake computer buttons in the top-right corner */
+.title-bar-buttons {
+    display: flex;
+    gap: 5px;
+}
+
+
+/* Style for each fake window button */
+.title-bar-buttons i {
+    display: grid;
+    place-items: center;
+
+    width: 22px;
+    height: 22px;
+
+    background: var(--cream);
+    border: 2px solid var(--ink);
+    border-radius: 6px;
+
+    color: var(--ink);
+
+    font-style: normal;
+    font-size: 0.8rem;
+    line-height: 1;
+
+    text-shadow: none;
+
+    /* Small highlight inside the button */
+    box-shadow: inset 0 -2px 0 var(--pink-100);
+}
+
+
+/* Main content area inside the window */
+.window-body {
+    flex: 1;
+    min-height: 0;
+
+    /* Responsive spacing around the content */
+    padding: clamp(12px, 2.4vw, 26px);
+}
+
+
+/* Small bar at the bottom of the window */
+.status-bar {
+    flex: none;
+
+    display: flex;
+    justify-content: space-between;
+
+    padding: 4px 14px;
+
+    background: var(--pink-100);
+
+    border-top: 3px solid var(--ink);
+
+    font-family: var(--font-pixel);
+    font-size: 0.8rem;
+
+    color: var(--ink);
+}
+
+
+/* Small white information boxes used throughout the game */
+.panel {
+    background: #fff;
+
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+
+    padding: 8px 12px;
+
+    /* Small pink shadow */
+    box-shadow: 3px 3px 0 var(--pink-300);
+}
+
+
+/* =========================================================
+   5. BUTTONS
+   ========================================================= */
+
+/* Basic style shared by every bunny-game button */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+
+    gap: 0.6em;
+
+    padding: 0.6em 1.6em;
+
+    font-family: var(--font-pixel);
+    font-weight: 700;
+    font-size: 1.2rem;
+    line-height: 1.1;
+
+    color: var(--ink);
+    background: #fff;
+
+    border: 3px solid var(--ink);
+
+    /* 999px makes the button completely rounded */
+    border-radius: 999px;
+
+    /* Show that the button can be clicked */
+    cursor: pointer;
+
+    /* Dark bottom shadow makes the button look thick.
+       The inset shadow creates a shiny highlight. */
+    box-shadow:
+        0 5px 0 var(--ink),
+        inset 0 3px 0 rgba(255, 255, 255, 0.75);
+
+    /* Makes button movement feel smooth */
+    transition:
+        transform 0.08s ease,
+        box-shadow 0.08s ease;
+}
+
+
+/* Move the button slightly upward when the mouse hovers over it */
+.btn:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 7px 0 var(--ink),
+        inset 0 3px 0 rgba(255, 255, 255, 0.75);
+}
+
+
+/* Move the button downward while it is being pressed */
+.btn:active {
+    transform: translateY(4px);
+
+    /* Smaller shadow makes it look pressed down */
+    box-shadow:
+        0 1px 0 var(--ink),
+        inset 0 3px 0 rgba(255, 255, 255, 0.75);
+}
+
+
+/* Keyboard users get a dashed outline around the button */
+.btn:focus-visible {
+    outline: 3px dashed var(--ink);
+    outline-offset: 4px;
+}
+
+
+/* Make disabled buttons look faded */
+.btn:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+    transform: none;
+
+    box-shadow: 0 3px 0 var(--ink);
+}
+
+
+/* Pink version of a button */
+.btn-primary {
+    background: var(--pink-500);
+    color: #fff;
+
+    /* Dark outline around the white text */
+    text-shadow: 0 2px 0 var(--ink);
+}
+
+
+/* White version of a button */
+.btn-soft {
+    background: #fff;
+}
+
+
+/* Smaller version of a button */
+.btn-small {
+    padding: 0.5em 1em;
+    font-size: 1rem;
+
+    box-shadow:
+        0 4px 0 var(--ink),
+        inset 0 3px 0 rgba(255, 255, 255, 0.75);
+}
+
+
+/* Draw a little play triangle before the button text.
+   This creates the play icon using CSS instead of an image. */
+.btn-play::before {
+    content: "";
+
+    width: 0;
+    height: 0;
+
+    border-left: 0.75em solid #fff;
+    border-top: 0.45em solid transparent;
+    border-bottom: 0.45em solid transparent;
+
+    /* Give the triangle a dark shadow */
+    filter: drop-shadow(0 2px 0 var(--ink));
+}
+
+
+/* =========================================================
+   6. TITLE / HOME SCREEN
+   ========================================================= */
+
+
+/* Keep the title window fairly narrow on larger screens */
+.title-window {
+    width: min(100%, 460px);
+}
+
+
+/* Stack the bunny, title, tagline, and buttons vertically */
+.title-body {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    /* Responsive spacing */
+    gap: clamp(10px, 2.4dvh, 22px);
+
+    text-align: center;
+}
+
+
+/* Pink square behind the main bunny */
+.bunny-sticker {
+    /* Make the bunny sticker responsive */
+    width: min(58vw, 34dvh, 230px);
+
+    /* Keep the sticker square */
+    aspect-ratio: 1;
+
+    display: grid;
+    place-items: center;
+
+    background: var(--pink-100);
+
+    border: 3px solid var(--ink);
+    border-radius: 26px;
+
+    transform: translateY(3px);
+    
+}
+
+
+/* Make the bunny image/SVG fit inside the sticker */
+.bunny-sticker .bunny {
+    width: 85%;
+    height: 85%;
+}
+
+
+/* Bunny gently moves up and down */
+@keyframes bob {
+    0%, 100% {
+        transform: rotate(-3deg) translateY(0);
+    }
+
+    50% {
+        transform: rotate(-1deg) translateY(-7px);
+    }
+}
+
+
+/* Container for the game title and tagline */
+.title-content {
+    display: flex;
+    flex-direction: column;
+
+    align-items: center;
+
+    gap: 6px;
+}
+
+
+/* Big pixel-style "BunBun" game title */
+.game-title {
+    font-family: var(--font-body);
+
+
+    /* Make the title responsive */
+    font-size: clamp(
+        3rem,
+        min(17vw, 11dvh),
+        5.5rem
+    );
+
+    line-height: 1;
+
+    color: #fff;
+
+    letter-spacing: 0.02em;
+
+    /* Multiple shadows create a chunky dark outline
+       around the bunny-game title. */
+    text-shadow:
+        -3px -3px 0 var(--ink),
+         0  -3px 0 var(--ink),
+         3px -3px 0 var(--ink),
+        -3px  0   0 var(--ink),
+         3px  0   0 var(--ink),
+        -3px  3px 0 var(--ink),
+         0   3px 0 var(--ink),
+         3px  3px 0 var(--ink),
+
+        /* Dark drop shadow */
+         0   8px 0 var(--ink),
+         3px  8px 0 var(--ink),
+        -3px  8px 0 var(--ink),
+
+        /* Pink drop shadow */
+         5px 11px 0 var(--pink-500);
+
+    padding-bottom: 10px;
+}
+
+
+/* Small pixel-style sentence underneath the title */
+.tagline {
+    font-family: "Baloo 2", sans-serif;
+    font-size: 1.05rem;
+
+    color: var(--pink-600);
+
+    margin-bottom: clamp(4px, 1.6dvh, 14px);
+}
+
+
+/* Stack the PLAY and other buttons */
+.button-stack {
+    display: flex;
+    flex-direction: column;
+
+    align-items: stretch;
+
+    gap: 14px;
+
+    padding-bottom: 4px;
+}
+
+
+/* Make the main PLAY button larger */
+.button-stack .btn-primary {
+    font-size: 1.6rem;
+    padding: 0.5em 2.4em;
+}
+
+
+/* Make secondary title-screen buttons smaller */
+.button-stack .btn-soft {
+    font-size: 1rem;
+}
+
+
+/* =========================================================
+   7. PUZZLE GAME SCREEN
+   ========================================================= */
+
+
+/* --board stores the size of the 5x5 bunny puzzle board.
+
+   The board cannot become too small or too large,
+   and the size changes depending on the screen. */
+.game-window {
+    --board: clamp(
+        190px,
+        min(100vw - 62px, 100dvh - 345px),
+        540px
+    );
+}
+
+
+/* The puzzle screen uses CSS Grid to arrange:
+   instructions/stats → board → message */
+.game-body {
+    display: grid;
+
+    /* In portrait mode, everything is one column */
+    grid-template-columns: var(--board);
+
+    grid-template-areas:
+        "header"
+        "board"
+        "message";
+
+    justify-content: center;
+    align-content: center;
+
+    gap: 12px;
+}
+
+
+/* ---------------------------------------------------------
+   PUZZLE HEADER
+   --------------------------------------------------------- */
+
+
+/* Instructions and stats are stacked vertically */
+.game-header {
+    grid-area: header;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+
+/* Stats such as WINS and LIVES */
+.stats {
+    /* Put stats before the instructions on portrait screens */
+    order: -1;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 10px;
+
+    padding: 6px 12px;
+}
+
+
+/* Put the label and number next to each other */
+.stat {
+    display: flex;
+    align-items: center;
+
+    gap: 8px;
+}
+
+
+/* Pixel font used for labels like WINS */
+.stat-label {
+    font-family: var(--font-pixel);
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+
+/* Number display, styled like a tiny old LCD screen */
+.stat-value {
+    min-width: 2.4ch;
+
+    padding: 1px 8px 2px;
+
+    text-align: center;
+
+    font-family: var(--font-pixel);
+    font-weight: 700;
+    font-size: 1.35rem;
+    line-height: 1.2;
+
+    color: var(--pink-600);
+
+    background: var(--pink-50);
+
+    border: 3px solid var(--ink);
+    border-radius: 9px;
+
+    /* Small highlight inside the number box */
+    box-shadow: inset 0 3px 0 var(--pink-100);
+}
+
+
+/* Put the bunny carrots/lives next to each other */
+.lives {
+    display: flex;
+    gap: 3px;
+}
+
+
+/* Size of each carrot that represents a life */
+.carrot {
+    width: 30px;
+    height: 30px;
+
+    transition: transform 0.15s ease;
+}
+
+
+/* JavaScript can add "lost" when the player loses a life.
+   The carrot becomes faded and gray. */
+.carrot.lost {
+    filter: grayscale(1);
+    opacity: 0.35;
+
+    transform: scale(0.85) rotate(-14deg);
+}
+
+
+/* "How to play" heading */
+.instructions .panel-title {
+    font-family: var(--font-pixel);
+    font-size: 1rem;
+
+    color: var(--pink-600);
+
+    margin-bottom: 2px;
+}
+
+
+/* Instruction text */
+.instructions p {
+    font-size: 0.84rem;
+    line-height: 1.3;
+}
+
+
+/* Important words in the instructions */
+.instructions strong {
+    font-weight: 800;
+    color: var(--pink-600);
+}
+
+#next-puzzle-button {
+    visibility: hidden;
+    opacity: 0;
+    margin-top: 12px;
+}
+
+#next-puzzle-button.show {
+    visibility: visible;
+    opacity: 1;
+}
+
+
+/* =========================================================
+   8. 5x5 BUNNY PUZZLE BOARD
+   ========================================================= */
+
+
+/* The board itself is a 5x5 CSS grid */
+.board {
+    grid-area: board;
+
+    width: var(--board);
+
+    /* Always keep the board perfectly square */
+    aspect-ratio: 1;
+
+    display: grid;
+
+    /* Five equal columns */
+    grid-template-columns: repeat(5, 1fr);
+
+    /* Five equal rows */
+    grid-template-rows: repeat(5, 1fr);
+
+    /* Tiny spaces between cells become the grid lines */
+    gap: 2px;
+
+    /* Dark background shows through the gaps */
+    background: var(--ink);
+
+    border: 3px solid var(--ink);
+    border-radius: 18px;
+
+    overflow: hidden;
+
+    /* Pink shadow underneath the board */
+    box-shadow: 5px 5px 0 var(--pink-500);
+}
+
+
+/* One individual square on the bunny puzzle board */
+.cell {
+    position: relative;
+
+    display: grid;
+    place-items: center;
+
+    /* Each region gives this variable a different color */
+    background: var(--cell-color, #fff);
+
+    /* White highlight at the top
+       and a very subtle shadow at the bottom */
+    box-shadow:
+        inset 0 3px 0 rgba(255, 255, 255, 0.55),
+        inset 0 -3px 0 rgba(91, 58, 61, 0.08);
+
+    cursor: pointer;
+
+    /* Makes the hover effect smooth */
+    transition: filter 0.1s ease;
+
+    overflow: hidden;
+}
+
+
+/* Make a puzzle cell slightly brighter when hovered */
+.cell:hover {
+    filter: brightness(1.06) saturate(1.15);
+}
+
+
+/* =========================================================
+   9. PUZZLE CELL COLORS
+   ========================================================= */
+
+/* Each region changes the cell's color.
+   --bow is another variable that can be used
+   for the bunny's bow color. */
+
+.region-1 {
+    --cell-color: var(--region-1);
+    --bow: #ff6fae;
+}
+
+.region-2 {
+    --cell-color: var(--region-2);
+    --bow: #a98be0;
+}
+
+.region-3 {
+    --cell-color: var(--region-3);
+    --bow: #6fb3ee;
+}
+
+.region-4 {
+    --cell-color: var(--region-4);
+    --bow: #7cc46b;
+}
+
+.region-5 {
+    --cell-color: var(--region-5);
+    --bow: #f2a93a;
+}
+
+
+/* A bunny inside a puzzle cell (when cell is double clicked) */
+.cell .bunny {
+    width: 95%;
+    height: 95%;
+    display: block;
+
+    /* Clicking the bunny counts as clicking the cell */
+    pointer-events: none;
+}
+
+/* The "X" in the cell */
+
+.cell.marked {
+    position: relative;
+}
+
+.cell.marked::before,
+.cell.marked::after {
+    content: "";
+    position: absolute;
+    width: 95%;
+    height: 11.5px;
+    background: white;
+    top: 48%;
+    left: 3%;
+}
+
+.cell.marked::before {
+    transform: rotate(45deg);
+}
+
+.cell.marked::after {
+    transform: rotate(-45deg);
+}
+
+
+.cell.wrong.marked::before, .cell.wrong.marked::after {
+    background: red;
+}
+
+
+.carrot.lost {
+    opacity: 0.2;
+}
+
+
+/* =========================================================
+   10. PUZZLE MESSAGE BOX
+   ========================================================= */
+
+
+/* Box that displays messages such as:
+   "Good job!" or "Try again!" */
+.message-box {
+    grid-area: message;
+
+    background: #fff;
+
+    border: 3px solid var(--ink);
+    border-radius: 14px;
+
+    overflow: hidden;
+
+    box-shadow: 3px 3px 0 var(--pink-300);
+}
+
+
+/* Pink header at the top of the message box */
+.message-header {
+    padding: 2px 12px;
+
+    background: var(--pink-300);
+
+    border-bottom: 3px solid var(--ink);
+
+    font-family: var(--font-pixel);
+    font-weight: 700;
+    font-size: 0.85rem;
+}
+
+
+/* Actual message text */
+.message-text {
+    /* Reserve enough space for roughly two lines.
+       This prevents the layout from jumping around. */
+    min-height: 2.7em;
+
+    margin: 8px 12px 0;
+
+    padding: 5px 8px;
+
+    background: var(--pink-50);
+
+    border: 2px dotted var(--pink-500);
+    border-radius: 8px;
+
+    font-size: 0.88rem;
+    line-height: 1.3;
+
+    text-align: center;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+
+
+
+/* Put message buttons next to each other */
+.message-buttons {
+    display: flex;
+
+    gap: 10px;
+
+    padding: 8px 12px 12px;
+}
+
+
+/* Make message buttons share the available width */
+.message-buttons .btn {
+    flex: 1;
+
+    padding-inline: 0.6em;
+}
+
+
+/* ---------------------------------------------------------
+   WIN AND LOSE MESSAGE COLORS
+
+   JavaScript can add either:
+   .is-win
+   or
+   .is-lose
+
+   to the message box.
+   --------------------------------------------------------- */
+
+
+/* Green message when the bunny puzzle is solved */
+.message-box.is-win .message-header {
+    background: var(--region-4);
+}
+
+.message-box.is-win .message-text {
+    background: #f3fbe9;
+    border-color: #7cc46b;
+}
+
+
+/* Lavender message when the player loses */
+.message-box.is-lose .message-header {
+    background: var(--region-2);
+}
+
+.message-box.is-lose .message-text {
+    background: #f7f2ff;
+    border-color: #a98be0;
+}
+
+
+/* =========================================================
+   11. LANDSCAPE MODE
+   =========================================================
+
+   This section activates when the phone/tablet is turned
+   sideways.
+
+   Instead of:
+
+       Instructions
+       Board
+       Message
+
+   we use:
+
+       Instructions | Board
+       Message      | Board
+   ========================================================= */
+
+@media (orientation: landscape) {
+
+    /* Make the board fit better on a sideways screen */
+    .game-window {
+        --board: clamp(
+            160px,
+            min(100dvh - 118px, 100vw - 420px),
+            640px
+        );
+    }
+
+
+    /* Put the information on the left
+       and the puzzle board on the right. */
+    .game-body {
+        grid-template-columns:
+            minmax(200px, 300px)
+            var(--board);
+
+        grid-template-rows: auto 1fr;
+
+        grid-template-areas:
+            "header board"
+            "message board";
+
+        column-gap: clamp(14px, 2.4vw, 26px);
+        row-gap: 12px;
+
+        align-content: center;
+    }
+
+
+    /* Keep instructions at the top of the left column */
+    .game-header {
+        align-self: start;
+    }
+
+
+    /* Put stats back in their normal position */
+    .stats {
+        order: 0;
+    }
+
+
+    /* Keep the message at the bottom of the left column */
+    .message-box {
+        align-self: end;
+    }
+}
+
+
+/* =========================================================
+   12. SHORT PORTRAIT PHONES
+   =========================================================
+
+   This is for phones that are upright but don't have
+   much vertical space.
+   ========================================================= */
+
+@media (orientation: portrait) and (max-height: 700px) {
+
+    /* Hide "How to Play" heading to save space */
+    .instructions .panel-title {
+        display: none;
+    }
+
+
+    /* Give the board slightly more room */
+    .game-window {
+        --board: clamp(
+            190px,
+            min(100vw - 62px, 100dvh - 320px),
+            540px
+        );
+    }
+}
+
+
+/* =========================================================
+   13. VERY NARROW PHONES
+   ========================================================= */
+
+@media (max-width: 360px) {
+
+    /* Make the window title smaller */
+    .title-bar-text {
+        font-size: 0.9rem;
+    }
+
+    /* Make instructions smaller */
+    .instructions p {
+        font-size: 0.78rem;
+    }
+}
+
+
+/* =========================================================
+   14. SHORT LANDSCAPE PHONES
+   =========================================================
+
+   This is for phones turned sideways where the screen
+   is especially short.
+   ========================================================= */
+
+@media (orientation: landscape) and (max-height: 520px) {
+
+    /* Reduce window padding */
+    .window-body {
+        padding: 10px 14px;
+    }
+
+
+    /* Make the title bar shorter */
+    .title-bar {
+        padding-block: 3px;
+    }
+
+
+    /* Make the fake computer buttons smaller */
+    .title-bar-buttons i {
+        width: 18px;
+        height: 18px;
+        font-size: 0.7rem;
+    }
+
+
+    /* Make the puzzle board smaller so everything fits */
+    .game-window {
+        --board: clamp(
+            150px,
+            min(100dvh - 96px, 100vw - 380px),
+            640px
+        );
+    }
+
+
+    /* Reduce spacing in the puzzle layout */
+    .game-body {
+        row-gap: 8px;
+    }
+
+
+    /* Reduce spacing inside the header */
+    .game-header {
+        gap: 8px;
+    }
+
+
+    /* Hide the instructions heading to save space */
+    .instructions .panel-title {
+        display: none;
+    }
+
+
+    /* Make instructions smaller */
+    .instructions p {
+        font-size: 0.76rem;
+        line-height: 1.25;
+    }
+
+
+    /* Make information panels smaller */
+    .panel {
+        padding: 5px 10px;
+    }
+
+
+    /* Make the stats box smaller */
+    .stats {
+        padding: 4px 10px;
+    }
+
+
+    /* Make the win counter smaller */
+    .stat-value {
+        font-size: 1.1rem;
+    }
+
+
+    /* Make the WINS/LIVES labels smaller */
+    .stat-label {
+        font-size: 0.85rem;
+    }
+
+
+    /* Make the carrot lives smaller */
+    .carrot {
+        width: 22px;
+        height: 22px;
+    }
+
+
+    /* Make the message header smaller */
+    .message-header {
+        font-size: 0.75rem;
+        padding-block: 0;
+    }
+
+
+    /* Make the message text smaller */
+    .message-text {
+        min-height: 0;
+        margin-top: 6px;
+
+        font-size: 0.78rem;
+
+        padding: 3px 6px;
+    }
+
+
+    /* Reduce spacing around message buttons */
+    .message-buttons {
+        padding: 6px 10px 8px;
+        gap: 8px;
+    }
+
+
+    /* Make small buttons even smaller */
+    .btn-small {
+        font-size: 0.85rem;
+
+        padding: 0.4em 0.6em;
+
+        box-shadow:
+            0 3px 0 var(--ink),
+            inset 0 2px 0 rgba(255, 255, 255, 0.75);
+    }
+
+
+    /* ---------------------------------------------------------
+       TITLE SCREEN ON A SHORT LANDSCAPE PHONE
+
+       Instead of:
+
+           Bunny
+           Title
+           Buttons
+
+       use:
+
+           Bunny | Title
+                 | Buttons
+       --------------------------------------------------------- */
+
+    .title-window {
+        width: min(100%, 640px);
+    }
+
+
+    /* Put the bunny and title next to each other */
+    .title-body {
+        flex-direction: row;
+        gap: 22px;
+    }
+
+
+    /* Make the bunny sticker smaller */
+    .bunny-sticker {
+        width: min(58vw, 44dvh, 200px);
+    }
+
+
+    /* Make the game title smaller */
+    .game-title {
+        font-size: clamp(
+            2.4rem,
+            13dvh,
+            4rem
+        );
+    }
+
+
+    /* Make the tagline smaller */
+    .tagline {
+        font-size: 0.9rem;
+        margin-bottom: 2px;
+    }
+
+
+    /* Put the title buttons next to each other */
+    .button-stack {
+        flex-direction: row;
+        align-items: center;
+        gap: 10px;
+    }
+
+
+    /* Smaller PLAY button */
+    .button-stack .btn-primary {
+        font-size: 1.15rem;
+        padding: 0.45em 1.4em;
+    }
+
+
+    /* Smaller secondary button */
+    .button-stack .btn-soft {
+        font-size: 0.85rem;
+        padding: 0.5em 0.9em;
+    }
+
+
+    /* Make the bottom status bar smaller */
+    .status-bar {
+        padding-block: 2px;
+        font-size: 0.7rem;
+    }
+}
+
+
+/* =========================================================
+   15. ACCESSIBILITY: REDUCED MOTION
+   =========================================================
+
+   Some people turn off animations in their computer/phone
+   settings because animations can make them uncomfortable.
+
+   If they do that, we stop the bunny and sparkle animations.
+   ========================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    /* Stop the decorative animations */
+    .sparkle,
+    .bunny-sticker {
+        animation: none;
+    }
+
+
+    /* Remove button movement */
+    .btn {
+        transition: none;
+    }
+}
