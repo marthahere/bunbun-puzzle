@@ -1180,7 +1180,7 @@ function startNewPuzzle() {
         "Pick a square to place your first bunny!";
 
 
-    document.getElementById("next-puzzle-button").style.display = "show";
+    document.getElementById("next-puzzle-button").classList.remove("show");;
 }
 
 
@@ -1439,7 +1439,7 @@ function puzzleWon() {
         "Wow! You solved it!";
 
     // Show the next puzzle button
-    document.getElementById("next-puzzle-button").style.display = "show";
+    document.getElementById("next-puzzle-button").classList.add("show");
     updateWins();
 }
 
@@ -1468,8 +1468,6 @@ function restartCurrentPuzzle() {
     document.getElementById("message-text").textContent =
         "Try again! You have 3 lives.";
 
-    document.getElementById("next-puzzle-button").style.display =
-        "show";
 }
 
 // ---------------------------------------------------------------
