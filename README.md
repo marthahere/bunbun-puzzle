@@ -1,5 +1,5 @@
 # bunbun-puzzle
-🐰🎀 A cute browser game inspired by the puzzle mechanics of Meowdoku 🎀🐰
+🐰🎀 Play here!: https://marthahere.github.io/bunbun-puzzle/
 
 BunBun is a little puzzle game where you place cute bunnies on a colorful 5×5 grid while following a few simple rules.
 
@@ -9,4 +9,4 @@ The game uses a 5×5 board with rules like one bunny per row and column, one bun
 
 One of the main things I wanted to experiment with was having JavaScript generate a new puzzle/solution for each round instead of manually making every level.
 
-It's a pretty simple game that I mostly made to learn, experiment and have fun! 💗
+It's a pretty simple game that I mostly made to learn, experiment and have fun! 💗 
