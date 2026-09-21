@@ -507,6 +507,7 @@ body {
 }
 
 
+
 /* Stack the bunny, title, tagline, and buttons vertically */
 .title-body {
     display: flex;
@@ -573,10 +574,11 @@ body {
 }
 
 
+
 /* Big pixel-style "BunBun" game title */
 .game-title {
-    font-family: var(--font-body);
 
+    font-family: var(--font-body);
 
     /* Make the title responsive */
     font-size: clamp(
@@ -617,7 +619,7 @@ body {
 
 /* Small pixel-style sentence underneath the title */
 .tagline {
-    font-family: "Baloo 2", sans-serif;
+    font-family: var(--font-pixel);
     font-size: 1.05rem;
 
     color: var(--pink-600);
