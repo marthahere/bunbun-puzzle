@@ -27,6 +27,11 @@
 
 <body>
 
+    <!-- Music -->
+    <audio id="background-music" loop>
+        <source src="music/bunny-music.mp3" type="audio/mpeg">
+    </audio>
+
     <!-- Reusable SVG drawings (provided by Claude). -->
     <svg class="sprites" width="0" height="0" aria-hidden="true" focusable="false">
         <defs>
@@ -274,7 +279,7 @@
                                 class="btn btn-soft"
                                 type="button"
                             >
-                                &#9834; Music: ON
+                                <span id="music-icon" style="text-decoration: line-through;">&#9834;</span> Music: OFF
                             </button>
 
                         </div>
@@ -286,7 +291,7 @@
                 <!-- Small status bar at the bottom of the window -->
                 <div class="status-bar" aria-hidden="true">
                     <span>ready &#9829;</span>
-                    <span>v1.0</span>
+                    <span>marthahere</span>
                 </div>
 
             </div>

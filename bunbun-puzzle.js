@@ -13,6 +13,28 @@ which uses rules and deductions instead of guessing, so the generated puzzles
 can actually be solved logically.
 */
 
+const music = document.getElementById("background-music");
+const musicButton = document.getElementById("music-button");
+
+let musicOn = false;
+
+musicButton.addEventListener("click", function () {
+    if (musicOn) {
+        music.pause();
+        musicOn = false;
+
+        musicButton.innerHTML =
+            '<span id="music-icon" style="text-decoration: line-through;">&#9834;</span> Music: OFF';
+    } else {
+        music.play();
+        musicOn = true;
+
+        musicButton.innerHTML =
+            '<span id="music-icon">&#9834;</span> Music: ON';
+    }
+});
+
+
 const playButton = document.getElementById("play-button");
 const titleScreen = document.getElementById("title-screen");
 const gameScreen = document.getElementById("game-screen");
@@ -1193,15 +1215,12 @@ function startNewPuzzle() {
 
 
 function displayPuzzle(puzzle) {
-
     const gameBoard = document.getElementById("game-board");
 
     // Clear the old puzzle first.
     gameBoard.innerHTML = "";
 
-
     for (let row = 0; row < BOARD_SIZE; row++) {
-
         for (let col = 0; col < BOARD_SIZE; col++) {
 
             const cell = document.createElement("div");
@@ -1212,34 +1231,42 @@ function displayPuzzle(puzzle) {
             // For example: region-1, region-2, etc.
             cell.classList.add(puzzle.colorBoard[row][col]);
 
-
             // Save the position of the cell.
             // This makes it easier to check the player's answer later.
             cell.dataset.row = row;
             cell.dataset.col = col;
 
-
             // Let the player click the cell to place/remove a bunny.
             let clickTimer;
-            
 
-            // Cell is crossed off ("X) when clicked once.
+            // Cell is crossed off ("X") when clicked once.
             // If clicked again, the "X" disappears and so on.
             cell.addEventListener("click", function() {
 
                 clickTimer = setTimeout(function() {
 
                     if (cell.querySelector(".bunny")) {
-                    return;
+                        return;
                     }
 
-                    cell.classList.toggle("marked");
-                }, 200);
+                    if (cell.classList.contains("marked")) {
+                    // Make the X shrink before removing it
+                        cell.classList.add("unmarking");
 
+                        setTimeout(function() {
+                            cell.classList.remove("marked");
+                            cell.classList.remove("unmarking");
+                        }, 300);
+                    } else {
+                        // Add the X
+                        cell.classList.add("marked");
+                    }
+                }, 200);
             });
 
-            // When cell is doble clicked, the bunny appears
+            // When cell is double clicked, the bunny appears
             cell.addEventListener("dblclick", function() {
+
                 clearTimeout(clickTimer);
 
                 if (cell.querySelector(".bunny")) {
@@ -1248,23 +1275,29 @@ function displayPuzzle(puzzle) {
 
                 cell.classList.remove("marked");
 
-                const bunny = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const bunny = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "svg"
+                );
+
                 bunny.classList.add("bunny");
 
-                const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+                const use = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "use"
+                );
+
                 use.setAttribute("href", "#bunny");
 
                 bunny.appendChild(use);
                 cell.appendChild(bunny);
 
-                // Here I just learned in JavaScript, function 
+                // Here I just learned in JavaScript, function
                 // declarations can be called before they appear in the file
-                checkBunnyPlacement(cell, row, col); 
-
+                checkBunnyPlacement(cell, row, col);
             });
 
             gameBoard.appendChild(cell);
-
         }
     }
 }

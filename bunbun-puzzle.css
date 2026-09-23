@@ -891,9 +891,13 @@ body {
 
 
 /* Make a puzzle cell slightly brighter when hovered */
-.cell:hover {
+/* This effect will only trigger on devices with a mouse */
+@media (hover: hover) and (pointer: fine) {
+  .cell:hover {
     filter: brightness(1.06) saturate(1.15);
+  }
 }
+
 
 
 /* =========================================================
@@ -938,6 +942,18 @@ body {
 
     /* Clicking the bunny counts as clicking the cell */
     pointer-events: none;
+    animation: bunny-pop 0.2s ease-out;
+}
+
+@keyframes bunny-pop {
+    from {
+        opacity: 0;
+        transform: scale(0.2);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
 }
 
 /* The "X" in the cell */
@@ -957,14 +973,52 @@ body {
     left: 3%;
 }
 
+/* First line: top left to bottom right */
 .cell.marked::before {
     transform: rotate(45deg);
+    clip-path: inset(0 100% 0 0);
+    animation: draw-first-line 0.3s ease-out forwards;
 }
 
+/* Second line: top right to bottom left */
 .cell.marked::after {
     transform: rotate(-45deg);
+    clip-path: inset(0 0 0 100%);
+    animation: draw-second-line 0.3s ease-out 0.3s forwards;
 }
 
+@keyframes draw-first-line {
+    from {
+        clip-path: inset(0 100% 0 0);
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+@keyframes draw-second-line {
+    from {
+        clip-path: inset(0 0 0 100%);
+    }
+    to {
+        clip-path: inset(0 0 0 0);
+    }
+}
+
+.cell.unmarking::before,
+.cell.unmarking::after {
+    animation: x-pop-out 0.25s ease-in forwards;
+}
+
+@keyframes x-pop-out {
+    from {
+        clip-path: inset(0 0 0 0);
+    }
+
+    to {
+        clip-path: inset(0 50% 0 50%);
+    }
+}
 
 .cell.wrong.marked::before, .cell.wrong.marked::after {
     background: red;
