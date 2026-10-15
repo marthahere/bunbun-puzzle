@@ -27,11 +27,6 @@
 
 <body>
 
-    <!-- Music -->
-    <audio id="background-music" loop>
-        <source src="music/bunny-music.mp3" type="audio/mpeg">
-    </audio>
-
     <!-- Reusable SVG drawings (provided by Claude). -->
     <svg class="sprites" width="0" height="0" aria-hidden="true" focusable="false">
         <defs>
@@ -234,7 +229,7 @@
                     <!-- Decorative window buttons (provided by Claude). -->
                     <span class="title-bar-buttons" aria-hidden="true">
                         <i>_</i>
-                        <i>&#9633;</i>
+                        <i class="window-maximize-icon"></i>
                         <i>&times;</i>
                     </span>
                 </div>
@@ -273,13 +268,14 @@
                                 Play
                             </button>
 
-                            <!-- JavaScript can toggle the music on/off. -->
+                            <!-- Open the game instructions. -->
                             <button
-                                id="music-button"
+                                id="how-to-play-button"
                                 class="btn btn-soft"
                                 type="button"
+                                aria-haspopup="dialog"
                             >
-                                <span id="music-icon" style="text-decoration: line-through;">&#9834;</span> Music: OFF
+                                How to Play
                             </button>
 
                         </div>
@@ -311,11 +307,11 @@
 
                 <!-- Game window title bar -->
                 <div class="title-bar">
-                    <span class="title-bar-text">BunBun - puzzle.exe</span>
+                    <span class="title-bar-text">BunBun-puzzle.exe</span>
 
                     <span class="title-bar-buttons" aria-hidden="true">
                         <i>_</i>
-                        <i>&#9633;</i>
+                        <i class="window-maximize-icon"></i>
                         <i>&times;</i>
                     </span>
                 </div>
@@ -331,15 +327,30 @@
                             id="instructions"
                             class="panel instructions"
                         >
-                            <h2 class="panel-title">How to play</h2>
+                            <h2 class="panel-title">
+                                <button
+                                    id="rules-toggle"
+                                    class="rules-toggle"
+                                    type="button"
+                                    aria-expanded="false"
+                                    aria-controls="rules-details"
+                                >
+                                    <span>BunBun Rules</span>
+                                    <span class="rules-chevron" aria-hidden="true"></span>
+                                </button>
+                            </h2>
 
-                            <p>
-                                One bunny in every
-                                <strong>row</strong>,
-                                <strong>column</strong>
-                                and <strong>color</strong>.
-                                Bunnies can't touch, not even corners!
-                            </p>
+                            <div id="rules-details" class="rules-details" hidden>
+                                <p class="rules-intro">Place all five bunnies while following all four rules!</p>
+                                <ul class="rules-list">
+                                    <li><strong>Rows:</strong> One bunny per row.</li>
+                                    <li><strong>Columns:</strong> One bunny per column.</li>
+                                    <li><strong>Colors:</strong> One bunny per colored region.</li>
+                                    <li><strong>Adjacency:</strong> Bunnies can't touch, even diagonally.</li>
+                                </ul>
+                                <p class="rules-controls"><strong>Single-click:</strong> Mark a square with an X. <strong>Double-click:</strong> Place a bunny.</p>
+                                <p class="rules-lives">You have 3 lives, so think carefully before placing a bunny!</p>
+                            </div>
                         </div>
 
 
@@ -436,6 +447,43 @@
         </section>
 
     </main>
+
+    <dialog id="how-to-play-dialog" class="how-to-play-dialog" aria-labelledby="how-to-play-title">
+        <div class="window how-to-play-window">
+            <div class="title-bar">
+                <span class="title-bar-text">BunBun-guide.exe</span>
+                <span class="title-bar-buttons" aria-hidden="true">
+                    <i>_</i>
+                    <i class="window-maximize-icon"></i>
+                    <i>&times;</i>
+                </span>
+            </div>
+
+            <div class="window-body how-to-play-body">
+                <h2 id="how-to-play-title" class="how-to-play-title">How to Play BunBun</h2>
+                <p class="how-to-play-intro">Find a spot for each bunny. Check all four rules!</p>
+
+                <ol class="how-to-play-list">
+                    <li><strong>One per row.</strong> Each row gets one bunny.</li>
+                    <li><strong>One per column.</strong> Each column gets one bunny.</li>
+                    <li><strong>One per color.</strong> Each colored region gets one bunny.</li>
+                    <li><strong>No neighbors.</strong> Bunnies can't touch, even diagonally.</li>
+                    <li><strong>Controls.</strong> Single-click to mark an X. Double-click to place a bunny.</li>
+                    <li><strong>Three lives.</strong> Wrong placements cost a life. Check all four rules and solve the board to win!</li>
+                </ol>
+
+                <p class="how-to-play-tip"><strong>Tip:</strong> A square can follow three rules and still break the fourth. Check them all!</p>
+
+                <button id="close-how-to-play-button" class="btn btn-primary btn-small" type="button">
+                    Got it!
+                </button>
+            </div>
+
+            <div class="status-bar how-to-play-status-bar" aria-hidden="true">
+                <span>marthahere</span>
+            </div>
+        </div>
+    </dialog>
 
     <script src="bunbun-puzzle.js"></script>
 </body>

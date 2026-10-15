@@ -13,32 +13,47 @@ which uses rules and deductions instead of guessing, so the generated puzzles
 can actually be solved logically.
 */
 
-const music = document.getElementById("background-music");
-const musicButton = document.getElementById("music-button");
-
-let musicOn = false;
-
-musicButton.addEventListener("click", function () {
-    if (musicOn) {
-        music.pause();
-        musicOn = false;
-
-        musicButton.innerHTML =
-            '<span id="music-icon" style="text-decoration: line-through;">&#9834;</span> Music: OFF';
-    } else {
-        music.play();
-        musicOn = true;
-
-        musicButton.innerHTML =
-            '<span id="music-icon">&#9834;</span> Music: ON';
-    }
-});
-
-
 const playButton = document.getElementById("play-button");
 const titleScreen = document.getElementById("title-screen");
 const gameScreen = document.getElementById("game-screen");
 const gameBoard = document.getElementById("game-board");
+const howToPlayButton = document.getElementById("how-to-play-button");
+const howToPlayDialog = document.getElementById("how-to-play-dialog");
+const closeHowToPlayButton = document.getElementById("close-how-to-play-button");
+const rulesToggle = document.getElementById("rules-toggle");
+const rulesDetails = document.getElementById("rules-details");
+
+// Line the guide up with the title window, even after resizing
+function positionHowToPlayDialog() {
+    const titleWindow = document.querySelector(".title-window");
+    const bounds = titleWindow.getBoundingClientRect();
+
+    howToPlayDialog.style.left = bounds.left + "px";
+    howToPlayDialog.style.top = bounds.top + "px";
+    howToPlayDialog.style.width = bounds.width + "px";
+    howToPlayDialog.style.height = bounds.height + "px";
+}
+
+howToPlayButton.addEventListener("click", function () {
+    positionHowToPlayDialog();
+    howToPlayDialog.showModal();
+});
+
+window.addEventListener("resize", function () {
+    if (howToPlayDialog.open) {
+        positionHowToPlayDialog();
+    }
+});
+
+closeHowToPlayButton.addEventListener("click", function () {
+    howToPlayDialog.close();
+});
+
+rulesToggle.addEventListener("click", function () {
+    const expanded = rulesToggle.getAttribute("aria-expanded") === "true";
+    rulesToggle.setAttribute("aria-expanded", String(!expanded));
+    rulesDetails.hidden = expanded;
+});
 
 // The main idea is to make a random bunny puzzle and then check
 // that the puzzle actually works before giving it back.

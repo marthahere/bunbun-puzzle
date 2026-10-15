@@ -326,6 +326,15 @@ body {
     box-shadow: inset 0 -2px 0 var(--pink-100);
 }
 
+/* Draw the middle window icon so it stays centered in its button */
+.title-bar-buttons .window-maximize-icon::before {
+    content: "";
+    width: 7px;
+    height: 7px;
+    border: 1.5px solid currentColor;
+    transform: translateX(0.35px);
+}
+
 
 /* Main content area inside the window */
 .window-body {
@@ -654,6 +663,156 @@ body {
 }
 
 
+/* Keep the guide on top of the title window without dimming the screen */
+.how-to-play-dialog {
+    position: fixed;
+    inset: 0;
+    display: none;
+    width: 100%;
+    max-width: none;
+    height: 100%;
+    max-height: none;
+    margin: 0;
+    padding: 0;
+    place-items: center;
+    overflow: hidden;
+    color: var(--ink);
+    background: transparent;
+    border: 0;
+}
+
+.how-to-play-dialog[open] {
+    display: grid;
+}
+
+.how-to-play-dialog::backdrop {
+    background: transparent;
+}
+
+.how-to-play-window {
+    width: 100%;
+    height: 100%;
+}
+
+.how-to-play-status-bar {
+    justify-content: flex-end;
+}
+
+.how-to-play-body {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    gap: 12px;
+    overflow: hidden;
+}
+
+.how-to-play-title {
+    width: 100%;
+    font-family: var(--font-pixel);
+    font-size: clamp(1.5rem, 5vw, 2rem);
+    color: var(--pink-600);
+    text-align: center;
+}
+
+.how-to-play-intro {
+    width: 100%;
+    font-size: 1.1rem;
+    text-align: center;
+}
+
+.how-to-play-list {
+    padding-left: 1.4em;
+    font-size: 1.08rem;
+    line-height: 1.35;
+}
+
+.how-to-play-list li + li {
+    margin-top: 8px;
+}
+
+.how-to-play-list strong,
+.how-to-play-tip strong {
+    color: var(--pink-600);
+}
+
+.how-to-play-tip {
+    padding: 10px 12px;
+    font-size: 1.05rem;
+    background: var(--pink-50);
+    border: 2px solid var(--pink-300);
+    border-radius: 10px;
+}
+
+.how-to-play-body .btn {
+    align-self: center;
+}
+
+@media (max-height: 650px) {
+    .how-to-play-body {
+        gap: 6px;
+        padding: 8px 12px;
+    }
+
+    .how-to-play-title {
+        font-size: 1.4rem;
+    }
+
+    .how-to-play-intro,
+    .how-to-play-list,
+    .how-to-play-tip {
+        font-size: 0.92rem;
+    }
+
+    .how-to-play-list {
+        line-height: 1.25;
+    }
+
+    .how-to-play-list li + li {
+        margin-top: 4px;
+    }
+
+    .how-to-play-tip {
+        padding: 6px 8px;
+    }
+
+    .how-to-play-body .btn {
+        padding: 0.4em 0.9em;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 420px) {
+    .how-to-play-body {
+        gap: 5px;
+        padding: 6px 10px;
+    }
+
+    .how-to-play-title {
+        font-size: 1.25rem;
+    }
+
+    .how-to-play-intro,
+    .how-to-play-list,
+    .how-to-play-tip {
+        font-size: 0.9rem;
+    }
+
+    .how-to-play-list li + li {
+        margin-top: 3px;
+    }
+
+    .how-to-play-tip {
+        padding: 5px 7px;
+    }
+
+    .how-to-play-body .btn {
+        padding: 0.35em 0.8em;
+        font-size: 0.85rem;
+    }
+}
+
+
 /* =========================================================
    7. PUZZLE GAME SCREEN
    ========================================================= */
@@ -666,7 +825,7 @@ body {
 .game-window {
     --board: clamp(
         190px,
-        min(100vw - 62px, 100dvh - 345px),
+        min(100vw - 62px, 100dvh - 400px),
         540px
     );
 }
@@ -764,6 +923,20 @@ body {
     box-shadow: inset 0 3px 0 var(--pink-100);
 }
 
+/* Keep the clearer win number centered in its original square */
+#win-count {
+    display: inline-grid;
+    place-items: center;
+    width: 29px;
+    min-width: 29px;
+    height: 29px;
+    padding: 0;
+    font-family: var(--font-body);
+    font-weight: 800;
+    font-size: 1rem;
+    line-height: 1;
+}
+
 
 /* Put the bunny carrots/lives next to each other */
 .lives {
@@ -776,8 +949,6 @@ body {
 .carrot {
     width: 30px;
     height: 30px;
-
-    transition: transform 0.15s ease;
 }
 
 
@@ -786,8 +957,6 @@ body {
 .carrot.lost {
     filter: grayscale(1);
     opacity: 0.35;
-
-    transform: scale(0.85) rotate(-14deg);
 }
 
 
@@ -798,7 +967,42 @@ body {
 
     color: var(--pink-600);
 
-    margin-bottom: 2px;
+    margin-bottom: 0;
+}
+
+.rules-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+
+    color: inherit;
+    background: transparent;
+    border: 0;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+}
+
+.rules-toggle:focus-visible {
+    outline: 2px dashed var(--ink);
+    outline-offset: 3px;
+}
+
+/* A fixed-size chevron flips without shifting the rules heading */
+.rules-chevron {
+    flex: 0 0 0.55em;
+    width: 0.55em;
+    height: 0.55em;
+    border-right: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    transform: rotate(45deg);
+    transition: transform 0.15s ease;
+}
+
+.rules-toggle[aria-expanded="true"] .rules-chevron {
+    transform: rotate(225deg);
 }
 
 
@@ -806,6 +1010,17 @@ body {
 .instructions p {
     font-size: 0.84rem;
     line-height: 1.3;
+}
+
+.rules-list {
+    padding-left: 1.2em;
+    font-size: 0.84rem;
+    line-height: 1.3;
+}
+
+.rules-controls,
+.rules-lives {
+    margin-top: 4px;
 }
 
 
@@ -1167,11 +1382,11 @@ body {
 
 @media (orientation: landscape) {
 
-    /* Make the board fit better on a sideways screen */
+    /* Leave a little room around the board on landscape screens */
     .game-window {
         --board: clamp(
             160px,
-            min(100dvh - 118px, 100vw - 420px),
+            min(100dvh - 150px, 100vw - 420px),
             640px
         );
     }
@@ -1226,17 +1441,11 @@ body {
 
 @media (orientation: portrait) and (max-height: 700px) {
 
-    /* Hide "How to Play" heading to save space */
-    .instructions .panel-title {
-        display: none;
-    }
-
-
     /* Give the board slightly more room */
     .game-window {
         --board: clamp(
             190px,
-            min(100vw - 62px, 100dvh - 320px),
+            min(100vw - 62px, 100dvh - 400px),
             540px
         );
     }
@@ -1257,6 +1466,10 @@ body {
     /* Make instructions smaller */
     .instructions p {
         font-size: 0.78rem;
+    }
+
+    .rules-list {
+        font-size: 0.74rem;
     }
 }
 
@@ -1313,16 +1526,15 @@ body {
     }
 
 
-    /* Hide the instructions heading to save space */
-    .instructions .panel-title {
-        display: none;
-    }
-
-
     /* Make instructions smaller */
     .instructions p {
         font-size: 0.76rem;
         line-height: 1.25;
+    }
+
+    .rules-list {
+        font-size: 0.7rem;
+        line-height: 1.2;
     }
 
 
