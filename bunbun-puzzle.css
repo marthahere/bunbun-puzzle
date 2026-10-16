@@ -444,9 +444,9 @@ body {
 }
 
 
-/* Keyboard users get a dashed outline around the button */
+/* Keep keyboard focus visible without a dashed ring */
 .btn:focus-visible {
-    outline: 3px dashed var(--ink);
+    outline: 3px solid var(--ink);
     outline-offset: 4px;
 }
 
@@ -713,6 +713,10 @@ body {
     font-size: clamp(1.5rem, 5vw, 2rem);
     color: var(--pink-600);
     text-align: center;
+}
+
+.how-to-play-title:focus {
+    outline: none;
 }
 
 .how-to-play-intro {
@@ -986,7 +990,7 @@ body {
 }
 
 .rules-toggle:focus-visible {
-    outline: 2px dashed var(--ink);
+    outline: 2px solid var(--ink);
     outline-offset: 3px;
 }
 
